@@ -9,6 +9,8 @@ interface FootballCardProps {
 
 export function FootballCard({ event }: FootballCardProps) {
     const isLive = event.status === 'live';
+    const isFinished = event.status === 'finished';
+    const isPast = isLive || isFinished;
     const metadata = event.metadata || {};
     const competition = metadata.competition || 'La Liga';
     const competitionLogo = metadata.competition_logo;
@@ -97,7 +99,7 @@ export function FootballCard({ event }: FootballCardProps) {
 
                 {/* Score / Time */}
                 <div className="flex flex-col items-center justify-center min-w-[80px]">
-                    {isLive ? (
+                    {isPast ? (
                         <div className="flex items-center gap-1">
                             <span className="text-4xl font-mono-figures font-black text-white tracking-tighter">{homeScore}</span>
                             <span className="text-2xl font-black text-slate-700">:</span>
@@ -132,7 +134,7 @@ export function FootballCard({ event }: FootballCardProps) {
             <div className="grid grid-cols-2 gap-3">
                 <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/5 flex flex-col gap-1">
                     <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1">
-                        <Clock className="w-2.5 h-2.5" /> Programado
+                        <Clock className="w-2.5 h-2.5" /> {isFinished ? 'Finalizado' : 'Programado'}
                     </span>
                     <span className="text-[11px] font-black text-white uppercase">
                         {dateString}
@@ -148,27 +150,33 @@ export function FootballCard({ event }: FootballCardProps) {
                 </div>
             </div>
 
-            {/* Match Progress (Live Only) */}
-            {isLive ? (
+            {/* Match Progress (Live or Finished) */}
+            {isPast ? (
                 <div className="mt-6 pt-5 border-t border-white/10">
                     <div className="flex items-center justify-between mb-2 px-1">
-                        <span className="text-[10px] font-black text-blue-400 uppercase tracking-tighter">
-                            {metadata.period || 'En juego'}
+                        <span className={`text-[10px] font-black uppercase tracking-tighter ${isFinished ? 'text-slate-500' : 'text-blue-400'}`}>
+                            {isFinished ? 'Final' : (metadata.period || 'En juego')}
                         </span>
                         <div className="flex items-center gap-1.5">
-                            <span className="relative flex h-1.5 w-1.5">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500"></span>
-                            </span>
-                            <span className="text-[11px] font-mono-figures font-black text-white italic">
-                                {metadata.minute || "0'"}
+                            {!isFinished && (
+                                <span className="relative flex h-1.5 w-1.5">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500"></span>
+                                </span>
+                            )}
+                            <span className={`text-[11px] font-mono-figures font-black italic ${isFinished ? 'text-slate-500' : 'text-white'}`}>
+                                {isFinished ? 'FT' : (metadata.minute || "0'")}
                             </span>
                         </div>
                     </div>
                     <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
                         <div
-                            className="h-full bg-gradient-to-r from-blue-600 via-blue-400 to-blue-600 transition-all duration-1000 shadow-[0_0_10px_rgba(59,130,246,0.3)]"
-                            style={{ width: metadata.progress || '0%' }}
+                            className={`h-full transition-all duration-1000 ${
+                                isFinished 
+                                ? 'bg-slate-700' 
+                                : 'bg-gradient-to-r from-blue-600 via-blue-400 to-blue-600 shadow-[0_0_10px_rgba(59,130,246,0.3)]'
+                            }`}
+                            style={{ width: isFinished ? '100%' : (metadata.progress || '0%') }}
                         />
                     </div>
                 </div>

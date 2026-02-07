@@ -1,4 +1,4 @@
-import { Flame, MapPin, Timer, Tv, Flag, Info } from 'lucide-react';
+import { Flame, MapPin, Timer, Tv, Flag, Info, Clock } from 'lucide-react';
 import Image from 'next/image';
 import type { SportEvent } from '@/types';
 import { CardContainer } from '@/components/ui/CardContainer';
@@ -11,6 +11,7 @@ export function F1Card({ event }: F1CardProps) {
     const metadata = event.metadata || {};
     const isAlonsoMagic = metadata.is_alonso_magic;
     const isLive = event.status === 'live';
+    const isFinished = event.status === 'finished';
     const countryFlag = metadata.country_flag;
     const session = metadata.session_type || 'Race';
     const gpName = event.title.split(' - ')[0] || event.title;
@@ -95,7 +96,7 @@ export function F1Card({ event }: F1CardProps) {
             <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/5 flex flex-col gap-1">
                     <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1">
-                        <Timer className="w-2.5 h-2.5" /> Programado
+                        <Clock className="w-2.5 h-2.5" /> {isFinished ? 'Finalizado' : 'Programado'}
                     </span>
                     <div className="flex items-baseline gap-1.5">
                         <span className="text-lg font-mono-figures font-black text-white tracking-tight">
@@ -118,33 +119,38 @@ export function F1Card({ event }: F1CardProps) {
             </div>
 
             {/* Live Progress or Date section */}
-            {isLive ? (
+            {isLive || isFinished ? (
                 <div className="mt-6 pt-6 border-t border-white/10">
                     <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-3">
                             <div className="flex flex-col">
-                                <span className="text-[9px] font-bold text-slate-500 uppercase leading-none mb-1">Position</span>
-                                <span className="text-lg font-mono-figures font-black text-emerald-400 leading-none">
-                                    {metadata.position || 'P1'}
+                                <span className={`text-[9px] font-bold uppercase leading-none mb-1 ${isFinished ? 'text-slate-500' : 'text-slate-500'}`}>
+                                    {isFinished ? 'Result' : 'Position'}
+                                </span>
+                                <span className={`text-lg font-mono-figures font-black leading-none ${isFinished ? 'text-white' : 'text-emerald-400'}`}>
+                                    {metadata.position || (isFinished ? 'N/A' : 'P1')}
                                 </span>
                             </div>
                             <div className="w-px h-6 bg-white/10" />
                             <div className="flex flex-col">
-                                <span className="text-[9px] font-bold text-slate-500 uppercase leading-none mb-1">Lap</span>
+                                <span className="text-[9px] font-bold text-slate-500 uppercase leading-none mb-1">{isFinished ? 'Status' : 'Lap'}</span>
                                 <span className="text-lg font-mono-figures font-black text-white leading-none">
-                                    {metadata.lap || '1/53'}
+                                    {isFinished ? 'Finished' : (metadata.lap || '1/53')}
                                 </span>
                             </div>
                         </div>
                         <div className="text-right">
-                            <span className="text-[9px] font-bold text-slate-500 uppercase block mb-1">Race Progress</span>
-                            <span className="text-sm font-mono-figures font-black text-white">{metadata.progress || '0%'}</span>
+                            <span className="text-[9px] font-bold text-slate-500 uppercase block mb-1">{isFinished ? 'Completion' : 'Race Progress'}</span>
+                            <span className="text-sm font-mono-figures font-black text-white">{isFinished ? '100%' : (metadata.progress || '0%')}</span>
                         </div>
                     </div>
                     <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
                         <div
-                            className="h-full bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-500 transition-all duration-1000 animate-pulse-slow"
-                            style={{ width: metadata.progress || '0%' }}
+                            className={`h-full transition-all duration-1000 ${isFinished
+                                ? 'bg-slate-700'
+                                : 'bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-500 animate-pulse-slow'
+                                }`}
+                            style={{ width: isFinished ? '100%' : (metadata.progress || '0%') }}
                         />
                     </div>
                 </div>

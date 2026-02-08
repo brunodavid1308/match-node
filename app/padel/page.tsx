@@ -16,19 +16,43 @@ export default function PadelPage() {
 
                 <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
                     {/* Header */}
-                    <div className="mb-8">
-                        <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-                            <Trophy className="w-8 h-8 text-emerald-400" />
-                            Mis Partidos de Pádel
-                        </h1>
-                        <p className="text-slate-400 mt-1">
-                            Registra tus resultados y sigue tu progreso en la pista.
-                        </p>
+                    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12">
+                        <div>
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="w-1.5 h-8 bg-emerald-500 rounded-full" />
+                                <h1 className="text-4xl font-black text-white tracking-tighter uppercase leading-none">
+                                    Mis Partidos
+                                </h1>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <p className="text-sm font-black text-slate-500 uppercase tracking-widest leading-none">
+                                    Pádel Pro
+                                </p>
+                                <div className="w-1 h-1 rounded-full bg-slate-700" />
+                                <span className="flex items-center gap-2 text-[10px] font-black text-emerald-500 uppercase tracking-widest">
+                                    <Trophy className="w-3 h-3" />
+                                    Match History
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Status Indicator */}
+                        <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-emerald-500 bg-emerald-500/10 px-3 py-1.5 rounded-xl border border-emerald-500/20">
+                                <span className="relative flex h-1.5 w-1.5">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                                </span>
+                                <span className="hidden sm:inline">Stats Sync</span>
+                            </div>
+                        </div>
                     </div>
 
                     {error && (
-                        <div className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400">
-                            <p className="text-sm">Error: {error}</p>
+                        <div className="mb-8 p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400">
+                            <p className="text-sm font-bold flex items-center gap-2">
+                                Error: {error}
+                            </p>
                         </div>
                     )}
 

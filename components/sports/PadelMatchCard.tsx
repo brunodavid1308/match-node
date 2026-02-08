@@ -32,60 +32,68 @@ export function PadelMatchCard({ match }: PadelMatchCardProps) {
     }).replace('.', '');
 
     return (
-        <CardContainer
-            className="group"
-            glowColor={match.win ? 'emerald' : 'red'}
-        >
-            <div className="p-5 flex flex-col h-full">
-                <div className="flex items-center justify-between mb-5">
-                    <div className="flex items-center gap-3">
+        <div className={cn(
+            "glass-panel-pro rounded-[2rem] relative overflow-hidden group hover:scale-[1.02] active:scale-[0.98]",
+            match.win ? "hover:shadow-[0_0_30px_rgba(16,185,129,0.1)]" : "hover:shadow-[0_0_30px_rgba(239,68,68,0.1)]"
+        )}>
+            {/* Dynamic Status Bar */}
+            <div className={cn(
+                "absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-current to-transparent opacity-40",
+                match.win ? "text-emerald-500" : "text-red-500"
+            )} />
+
+            <div className="p-7 flex flex-col h-full">
+                <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-4">
                         <div className={cn(
-                            "w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-500",
+                            "w-11 h-11 rounded-2xl flex items-center justify-center transition-all duration-500 border shadow-inner",
                             match.win
-                                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                                : "bg-red-500/10 text-red-500 border border-red-500/20"
+                                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                                : "bg-red-500/10 text-red-500 border-red-500/20"
                         )}>
-                            <Trophy className="w-4.5 h-4.5" />
+                            <Trophy className="w-5 h-5 group-hover:scale-110 transition-transform duration-500" />
                         </div>
-                        <span className={cn(
-                            "text-[11px] font-black uppercase tracking-[0.1em]",
-                            match.win ? "text-emerald-400" : "text-red-500"
-                        )}>
-                            {match.win ? 'Victory' : 'Defeat'}
-                        </span>
+                        <div>
+                            <span className={cn(
+                                "text-[11px] font-black uppercase tracking-[0.2em] block mb-0.5",
+                                match.win ? "text-emerald-400" : "text-red-500"
+                            )}>
+                                {match.win ? 'Victory' : 'Defeat'}
+                            </span>
+                            <div className="flex items-center gap-2">
+                                <Calendar className="w-3 h-3 text-slate-600" />
+                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-tighter">{dateStr}</span>
+                            </div>
+                        </div>
                     </div>
                     <button
                         onClick={handleDelete}
                         disabled={isDeleting}
-                        className="opacity-0 group-hover:opacity-100 p-2 text-slate-600 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
+                        className="opacity-0 group-hover:opacity-100 p-2.5 text-slate-600 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all duration-300"
                         aria-label="Borrar partido"
                     >
                         <Trash2 className="w-4 h-4" />
                     </button>
                 </div>
 
-                <div className="space-y-5 flex-grow">
-                    <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 rounded-full overflow-hidden bg-white/[0.03] border border-white/5 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-500">
-                            <Users className="w-4.5 h-4.5 text-slate-500" />
+                <div className="space-y-6 flex-grow">
+                    <div className="flex items-start gap-5">
+                        <div className="w-12 h-12 rounded-2xl overflow-hidden bg-white/[0.03] border border-white/5 flex items-center justify-center flex-shrink-0 group-hover:border-white/20 transition-all duration-500">
+                            <Users className="w-5 h-5 text-slate-400" />
                         </div>
-                        <div className="min-w-0">
-                            <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest leading-none mb-1.5">Oposición</p>
-                            <p className="text-[13px] font-black text-white truncate uppercase tracking-tight">{match.opponents}</p>
+                        <div className="min-w-0 flex-grow py-1">
+                            <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] leading-none mb-2">Oponentess</p>
+                            <p className="text-sm font-black text-white truncate uppercase tracking-tight group-hover:text-emerald-400 transition-colors">{match.opponents}</p>
                         </div>
                     </div>
                 </div>
 
-                <div className="mt-8 pt-5 border-t border-white/5 flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                        <Calendar className="w-4 h-4 text-slate-600" />
-                        <span className="text-[11px] font-black text-slate-500 uppercase tracking-tighter">{dateStr}</span>
-                    </div>
-                    <div className="px-4 py-1.5 bg-white/[0.03] rounded-xl border border-white/5 shadow-inner">
-                        <span className="text-sm font-black text-white font-mono tracking-tighter">{match.result}</span>
+                <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-center">
+                    <div className="px-8 py-3 bg-white/[0.02] rounded-2xl border border-white/5 shadow-inner group-hover:bg-white/[0.05] transition-all duration-500">
+                        <span className="text-2xl font-black text-white font-mono tracking-tighter tabular-nums">{match.result}</span>
                     </div>
                 </div>
             </div>
-        </CardContainer>
+        </div>
     );
 }

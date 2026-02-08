@@ -45,14 +45,14 @@ export function PadelStats({ matches }: PadelStatsProps) {
     ];
 
     return (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {stats.map((stat) => (
-                <div key={stat.label} className="bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-2xl p-4 flex flex-col items-center justify-center text-center">
-                    <div className={`p-2 rounded-xl ${stat.bg} ${stat.color} mb-2`}>
-                        <stat.icon className="w-5 h-5" />
+                <div key={stat.label} className="glass-panel-pro rounded-3xl p-6 flex flex-col items-center justify-center text-center shadow-xl group hover:scale-105 transition-all duration-300 pointer-events-none">
+                    <div className={`w-12 h-12 rounded-2xl ${stat.bg} ${stat.color} mb-4 flex items-center justify-center border border-white/5`}>
+                        <stat.icon className="w-6 h-6" />
                     </div>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">{stat.label}</p>
-                    <p className="text-2xl font-black text-white">{stat.value}</p>
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2">{stat.label}</p>
+                    <p className="text-3xl font-black text-white tracking-tighter tabular-nums">{stat.value}</p>
                 </div>
             ))}
         </div>

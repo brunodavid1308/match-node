@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts';
@@ -8,12 +8,19 @@ import { Zap, Mail, Lock, Loader2, AlertCircle } from 'lucide-react';
 
 export default function LoginPage() {
     const router = useRouter();
-    const { signIn } = useAuth();
+    const { signIn, user, isLoading: isAuthLoading } = useAuth();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!isAuthLoading && user) {
+            router.push('/');
+        }
+    }, [user, isAuthLoading, router]);
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

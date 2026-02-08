@@ -11,7 +11,6 @@ import {
 import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 import type { Profile } from '@/types';
-import router from 'next/router';
 
 interface AuthContextType {
     user: User | null;
@@ -36,16 +35,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const [profile, setProfile] = useState<Profile | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    // Simplified Profile Fetch
-    const fetchProfile = useCallback(async (userId: string) => {
+    // Reliable Profile Fetch with Retry
+    const fetchProfile = useCallback(async (userId: string, retryCount = 0): Promise<Profile | null> => {
         try {
+            console.log(`[Auth] Fetching profile for ${userId} (attempt ${retryCount + 1})`);
+
+            // We use maybeSingle() to avoid throwing a 406/PGRST116 error if it doesn't exist yet
             const { data, error } = await supabase
                 .from('profiles')
                 .select('*')
                 .eq('id', userId)
-                .single();
+                .maybeSingle();
 
             if (error) throw error;
+
+            // If not found and we have retries left, wait and try again
+            if (!data && retryCount < 5) {
+                console.log('[Auth] Profile not found yet, retrying in 1.5s...');
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                return fetchProfile(userId, retryCount + 1);
+            }
+
             return data as Profile;
         } catch (err: any) {
             console.error('[Auth] Error fetching profile:', err.message);
@@ -150,7 +160,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             setSession(null);
             setProfile(null);
             console.log('[Auth] Local session cleared, redirecting...');
-            router.push('/login');
+            window.location.href = '/login';
         }
     };
 

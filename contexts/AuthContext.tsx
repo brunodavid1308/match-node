@@ -11,6 +11,7 @@ import {
 import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 import type { Profile } from '@/types';
+import router from 'next/router';
 
 interface AuthContextType {
     user: User | null;
@@ -135,12 +136,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     // Sign out
     const signOut = async () => {
-        await supabase.auth.signOut();
-        setUser(null);
-        setSession(null);
-        setProfile(null);
-        // Force redirect to login
-        window.location.href = '/login';
+        try {
+            console.log('[Auth] Signing out...');
+            // We use { scope: 'local' } to ensure the local session is cleared 
+            // even if the server call fails or is blocked
+            const { error } = await supabase.auth.signOut({ scope: 'local' });
+            if (error) console.error('[Auth] SignOut Error:', error.message);
+        } catch (err: any) {
+            console.error('[Auth] Unexpected error during signout:', err.message);
+        } finally {
+            // Always clear state and redirect
+            setUser(null);
+            setSession(null);
+            setProfile(null);
+            console.log('[Auth] Local session cleared, redirecting...');
+            router.push('/login');
+        }
     };
 
     const value: AuthContextType = {
